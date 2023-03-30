@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lgoin</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body style="text-align: center">
+    <input type="text" id="uuid">
+    <br>
+    <br>
+    <input type="password" id ="password">
+    <br>
+    <br>
+    <button onclick="login()">登录</button>
+    <br>
+    <br>
+    <button onclick="reg()">注册</button>
+    <script>
+        let login = ()=>{
+            let uuid = document.querySelector("#uuid").value
+            let password = document.querySelector("#password").value
+            axios.get('/user/login', {
+                params: {
+                    uuid: uuid,
+                    password:password
+                }
+            })
+                .then(function (response) {
+                    let code = response['data']['code']
+                    let message = response['data']['message']
+                    if (code === 200){
+                        localStorage.setItem("token",message)
+                        location.href = location.origin
+                    }else{
+                        alert(message)
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        }
+        let reg = ()=>{
+            location.href = location.origin+"\\reg.html"
+        }
+    </script>
+</body>
+</html>

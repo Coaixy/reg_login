@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        let token = localStorage.getItem("token")
+        if (token == null){
+            location.href = location.origin+"\\login.html"
+        }
+        axios.get('/user/verity/'+token)
+            .then(function (response) {
+                let code = response['data']['code']
+                let message = response['data']['message']
+                if (code === 201){
+                    alert(message)
+                    setTimeout(()=>{
+                        location.href = location.origin+"\\login.html"
+                    },300)
+                }
+                if (code === 200){
+                    axios.get('/user/'+message)
+                        .then(function (response) {
+                            let code = response['data']['code']
+                            let nickname = response['data']['message']['nickname']
+                            let uuid = response['data']['message']['uuid']
+                            if (code === 200){
+                                document.querySelector("#uuid").innerHTML = uuid
+                                document.querySelector("#nickName").innerHTML = nickname
+                                console.log()
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    </script>
+</head>
+<body style="text-align: center">
+    <h1 id="uuid"></h1>
+    <h1 id="nickName"></h1>
+    <br><br>
+    <button onclick="reLogin()">
+        退出登录
+    </button>
+    <script>
+        let reLogin = ()=>{
+            localStorage.removeItem("token")
+            location.href = location.origin+"\\login.html"
+        }
+    </script>
+</body>
+</html>

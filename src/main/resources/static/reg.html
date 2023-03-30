@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reg</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body style="text-align: center">
+    <input type="text" id="nickName">
+    <br>
+    <br>
+    <input type="password" id ="password">
+    <br>
+    <br>
+    <button onclick="reg()">注册</button>
+    <script>
+        let reg = ()=>{
+            let nickName = document.querySelector("#nickName").value
+            let password = document.querySelector("#password").value
+            let param = new URLSearchParams();
+            param.append("nickname",nickName)
+            param.append("password",password)
+            // 发起一个post请求
+            axios({
+                method: 'post',
+                url: '/user/insert',
+                headers: {
+                    'Content-Type':'application/json;charset=UTF-8'
+                },
+                data: {
+                    nickname:nickName,
+                    password:password
+                }
+            }).then(function (response) {
+                let code = response['data']['code']
+                let message = response['data']['message']
+                if (code === 200){
+                    localStorage.setItem("token",message)
+                    location.href = location.origin
+                }else{
+                    alert(message)
+                }
+            })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        }
+    </script>
+</body>
+</html>
