@@ -36,11 +36,16 @@ public class UserController {
 
     //登录
     @GetMapping("/login")
-    ResponseEntity login(String uuid,String password){
+    ResponseEntity login(String lid,String password){
         ResponseEntity responseEntity = new ResponseEntity();
         responseEntity.setCode(200);
         password = Helper.md5(password);
-        UserEntity userEntity = userMapper.selectById(uuid);
+        var userData = lid.split("#");
+        String nickname = userData[0];
+        String number = userData[userData.length-1];
+        QueryWrapper<UserEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("nickname",nickname).and(qw -> qw.eq("number",number));
+        UserEntity userEntity = userMapper.selectOne(queryWrapper);
         //如果没查到数据
         if (userEntity == null){
             responseEntity.setCode(201);
