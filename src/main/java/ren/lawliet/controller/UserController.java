@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.web.bind.annotation.*;
 import ren.lawliet.entity.ResponseEntity;
 import ren.lawliet.entity.UserEntity;
+import ren.lawliet.entity.regUser;
 import ren.lawliet.mapper.UserMapper;
 import ren.lawliet.util.Helper;
 import ren.lawliet.util.JwtUtil;
@@ -133,25 +134,5 @@ public class UserController {
             responseEntity.setMessage("token检验错误");
         }
         return responseEntity;
-    }
-}
-class regUser{
-    private String nickname;
-    private String password;
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }
