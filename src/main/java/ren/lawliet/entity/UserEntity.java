@@ -14,6 +14,16 @@ public class UserEntity {
     private String uuid;
     private String nickname;
     private String password;
+    private int number;
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
 
     public String getUuid() {
         return uuid;

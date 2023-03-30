@@ -1,11 +1,7 @@
 package ren.lawliet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper;
 import io.jsonwebtoken.Claims;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ren.lawliet.entity.ResponseEntity;
 import ren.lawliet.entity.UserEntity;
@@ -13,7 +9,8 @@ import ren.lawliet.mapper.UserMapper;
 import ren.lawliet.util.Helper;
 import ren.lawliet.util.JwtUtil;
 
-import java.lang.annotation.Repeatable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -21,8 +18,12 @@ import java.util.HashMap;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
+    final
     UserMapper userMapper;
+
+    public UserController(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     /**
      * RestFul 风格
@@ -57,7 +58,7 @@ public class UserController {
     }
     //通过UUID获取NickName
     @GetMapping("/{uuid}")
-    ResponseEntity getUser(@PathVariable("uuid") String id, HttpServletResponse response){
+    ResponseEntity getUser(@PathVariable("uuid") String id){
         ResponseEntity responseEntity = new ResponseEntity();
         responseEntity.setCode(200);
         UserEntity userEntity = userMapper.selectById(id);
@@ -67,15 +68,31 @@ public class UserController {
             data.put("uuid",userEntity.getUuid());
             responseEntity.setMessage(data);
         }else{
-            responseEntity.setCode(500);
+            responseEntity.setCode(201);
         }
         return responseEntity;
     }
     //创建新用户 账号密码
     @PostMapping("/insert")
-    ResponseEntity insertUser(@RequestBody UserEntity userEntity,HttpServletResponse response){
-        String password = Helper.md5(userEntity.getPassword());
+    ResponseEntity insertUser(@RequestParam String nickname,@RequestParam String password){
+        UserEntity userEntity = new UserEntity();
+        password = Helper.md5(password);
+        userEntity.setNickname(nickname);
         userEntity.setPassword(password);
+
+        QueryWrapper<UserEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("nickname",nickname);
+        if (userMapper.selectCount(queryWrapper) == 0){
+            userEntity.setNumber(0);
+        }else{
+            var users = userMapper.selectList(queryWrapper);
+            ArrayList<Integer> numbers = new ArrayList<>();
+            for (var user : users){
+                numbers.add(user.getNumber());
+            }
+            int maxNum = Collections.max(numbers);
+            userEntity.setNumber(maxNum+1);
+        }
         int flag = userMapper.insert(userEntity);
         ResponseEntity responseEntity = new ResponseEntity();
         if (flag > 0){
