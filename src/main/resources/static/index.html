@@ -25,9 +25,10 @@
                             let code = response['data']['code']
                             let nickname = response['data']['message']['nickname']
                             let uuid = response['data']['message']['uuid']
+                            let number = response['data']['message']['number']
                             if (code === 200){
                                 document.querySelector("#uuid").innerHTML = uuid
-                                document.querySelector("#nickName").innerHTML = nickname
+                                document.querySelector("#nickName").innerHTML = nickname+"#"+number
                                 console.log()
                             }
                         })

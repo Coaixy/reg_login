@@ -6,7 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body style="text-align: center">
-    <input type="text" id="uuid">
+    <input type="text" id="lid">
     <br>
     <br>
     <input type="password" id ="password">
@@ -18,11 +18,11 @@
     <button onclick="reg()">注册</button>
     <script>
         let login = ()=>{
-            let uuid = document.querySelector("#uuid").value
+            let lid = document.querySelector("#lid").value
             let password = document.querySelector("#password").value
             axios.get('/user/login', {
                 params: {
-                    uuid: uuid,
+                    lid: lid,
                     password:password
                 }
             })

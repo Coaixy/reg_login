@@ -71,6 +71,7 @@ public class UserController {
         if (userEntity != null){
             data.put("nickname", userEntity.getNickname());
             data.put("uuid",userEntity.getUuid());
+            data.put("number", String.valueOf(userEntity.getNumber()));
             responseEntity.setMessage(data);
         }else{
             responseEntity.setCode(201);
@@ -79,7 +80,9 @@ public class UserController {
     }
     //创建新用户 账号密码
     @PostMapping("/insert")
-    ResponseEntity insertUser(@RequestParam String nickname,@RequestParam String password){
+    ResponseEntity insertUser(@RequestBody regUser regUser){
+        String password = regUser.getPassword();
+        String nickname = regUser.getNickname();
         UserEntity userEntity = new UserEntity();
         password = Helper.md5(password);
         userEntity.setNickname(nickname);
@@ -130,5 +133,25 @@ public class UserController {
             responseEntity.setMessage("token检验错误");
         }
         return responseEntity;
+    }
+}
+class regUser{
+    private String nickname;
+    private String password;
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
